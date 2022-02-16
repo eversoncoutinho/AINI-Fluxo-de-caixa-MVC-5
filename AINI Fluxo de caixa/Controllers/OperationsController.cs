@@ -8,12 +8,15 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using AINI_Fluxo_de_caixa.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace AINI_Fluxo_de_caixa.Controllers
 {
     public class OperationsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
+
+        public IActionResult BadRequest { get; private set; }
 
         // GET: Operations
         public async Task<ActionResult> Index()
@@ -123,6 +126,22 @@ namespace AINI_Fluxo_de_caixa.Controllers
                 db.Dispose();
             }
             base.Dispose(disposing);
+        }
+        //listar somente as entradas
+        
+        public async Task<ActionResult> Entradas() //filtro
+        {
+            var filtro = await db.Operations.Where(p => p.Tipo == "E").ToListAsync();
+            return View(filtro);
+            
+            
+        }
+        public async Task<ActionResult> Saidas() //filtro
+        {
+            var filtro = await db.Operations.Where(p => p.Tipo == "S").ToListAsync();
+            return View(filtro);
+
+
         }
     }
 }
